@@ -28,18 +28,6 @@ As an output the RMSE on the validation set achieved is reported.
 [^1] F. Maxwell Harper and Joseph A. Konstan. 2015. The MovieLens Datasets: History and Context. ACM Transactions on Interactive Intelligent Systems (TiiS) 5, 4, Article 19 (December 2015), 19 pages. DOI=http://dx.doi.org/10.1145/2827872
 
 # 3. Methods
-The Movielens 10M dataset is already in a tidy format, the training and the testing set was created following the given instructions to download the data and to use 10% for validation purposes. 
-
-#############################################################
-Create edx set, validation set, and submission file
-#############################################################
-
-Note: this process could take a couple of minutes
-```{r required libraries, eval=FALSE, include=FALSE}
-if(!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
-if(!require(caret)) install.packages("caret", repos = "http://cran.us.r-project.org")
-```
-
 The tidyverse library will be used which includes the following packages:
 * ggplot2, for data visualisation
 * dplyr, for data manipulation
@@ -50,15 +38,27 @@ The tidyverse library will be used which includes the following packages:
 * stringr, for strings
 * forcats, for factors
 
-```{r libraries, include=FALSE}
+```{r libraries, include=TRUE}
 library(tidyverse)
 library(caret)
+```
+
+The Movielens 10M dataset is already in a tidy format, the training and the testing set was created following the given instructions to download the data and to use 10% for validation purposes. Code is only shown not executed, this was done separatly.
+
+#############################################################
+Create edx set, validation set, and submission file
+#############################################################
+
+Note: this process could take a couple of minutes
+```{r required libraries, eval=FALSE, include=TRUE}
+if(!require(tidyverse)) install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+if(!require(caret)) install.packages("caret", repos = "http://cran.us.r-project.org")
 ```
 
 Download the MovieLens 10M dataset:
 https://grouplens.org/datasets/movielens/10m/
 http://files.grouplens.org/datasets/movielens/ml-10m.zip
-```{r download ML dataset, eval=FALSE, include=FALSE}
+```{r download ML dataset, eval=FALSE, include=TRUE}
 dl <- tempfile()
 download.file("http://files.grouplens.org/datasets/movielens/ml-10m.zip", dl)
 
@@ -75,7 +75,7 @@ movielens <- left_join(ratings, movies, by = "movieId")
 ```
 
 Validation set will be 10% of MovieLens data
-```{r create validation set, eval=FALSE, include=FALSE}
+```{r create validation set, eval=FALSE, include=TRUE}
 set.seed(1)
 test_index <- createDataPartition(y = movielens$rating, times = 1, p = 0.1, list = FALSE)
 edx <- movielens[-test_index,]
@@ -83,14 +83,14 @@ temp <- movielens[test_index,]
 ```
 
 Make sure userId and movieId in validation set are also in edx set
-```{r check validation set, eval=FALSE, include=FALSE}
+```{r check validation set, eval=FALSE, include=TRUE}
 validation <- temp %>% 
      semi_join(edx, by = "movieId") %>%
      semi_join(edx, by = "userId")
 ```
 
 Add rows removed from validation set back into edx set
-```{r include removed rows, eval=FALSE, include=FALSE}
+```{r include removed rows, eval=FALSE, include=TRUE}
 removed <- anti_join(temp, validation)
 edx <- rbind(edx, removed)
 
@@ -521,7 +521,7 @@ RMSE result with the final model.
 ```{r RMSE final reg model}
 # obtaining the rmse
 rmse_results_6 <- bind_rows(rmse_results_5,
-                          data_frame(method="regularized movie bias + user bias",
+                          tibble(method="regularized movie bias + user bias",
                                      RMSE = min(model_6_rmses)))
 # final results table
 rmse_results_6
